@@ -20,21 +20,15 @@ metadata:
   name: fedora-gitops1
 spec:
   dataVolumeTemplates:
-  - apiVersion: cdi.kubevirt.io/v1beta1
-    kind: DataVolume
-    metadata:
-      name: fedora-gitops1
-    spec:
-      pvc:
-        accessModes:
-        - ReadWriteMany
-        resources:
-          requests:
-            storage: 30Gi
-      source:
-        pvc:
+  - metadata:
+        name: fedora-gitops1
+      spec:
+        sourceRef:
+          kind: DataSource
           name: fedora
           namespace: openshift-virtualization-os-images
+        storage:
+          resources: {}
   running: true
   template:
     metadata:
