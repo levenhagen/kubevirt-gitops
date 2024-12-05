@@ -1,79 +1,50 @@
 apiVersion: kubevirt.io/v1
 kind: VirtualMachine
 metadata:
-  annotations:
-    vm.kubevirt.io/validations: |
-      [
-        {
-          "name": "minimal-required-memory",
-          "path": "jsonpath::.spec.domain.resources.requests.memory",
-          "rule": "integer",
-          "message": "This VM requires more memory.",
-          "min": 1073741824
-        }
-      ]
-  labels:
-    app: fedora-gitops1
-    vm.kubevirt.io/template: fedora-server-medium
-    vm.kubevirt.io/template.revision: "1"
-    vm.kubevirt.io/template.version: v0.14.0
-  name: fedora-gitops1
+  name: rhel8-gitops
 spec:
   dataVolumeTemplates:
     - metadata:
-        name: fedora-gitops1
+        name: rhel8-gitops
       spec:
         sourceRef:
           kind: DataSource
-          name: fedora
+          name: rhel8
           namespace: openshift-virtualization-os-images
         storage:
-          resources: {}
+          resources:
+            requests:
+              storage: 30Gi
+  instancetype:
+    name: u1.large
+  preference:
+    name: rhel8-gitops
   running: true
   template:
     metadata:
-      annotations:
-        vm.kubevirt.io/flavor: medium
-        vm.kubevirt.io/os: fedora
-        vm.kubevirt.io/workload: server
       labels:
-        kubevirt.io/domain: fedora-gitops1
-        kubevirt.io/size: medium
+        network.kubevirt.io/headlessService: headless
     spec:
       domain:
-        cpu:
-          cores: 2
-          sockets: 1
-          threads: 1
         devices:
-          disks:
-          - disk:
-              bus: virtio
-            name: fedora-gitops1
-          - disk:
-              bus: virtio
-            name: cloudinitdisk
+          autoattachPodInterface: false
+          disks: []
           interfaces:
-          - masquerade: {}
-            name: default
-          networkInterfaceMultiqueue: true
-          rng: {}
-        resources:
-          requests:
-            memory: 8Gi
-      evictionStrategy: LiveMigrate
+            - masquerade: {}
+              name: default
       networks:
-      - name: default
-        pod: {}
-      terminationGracePeriodSeconds: 180
+        - name: default
+          pod: {}
+      subdomain: headless
       volumes:
-      - dataVolume:
-          name: fedora-gitops1
-        name: fedora-gitops1
-      - cloudInitNoCloud:
-          userData: |-
-            #cloud-config
-            user: fedora
-            password: vr3x-xos0-gntb
-            chpasswd: { expire: False }
-        name: cloudinitdisk
+        - dataVolume:
+            name: rhel8-gitops
+          name: rootdisk
+        - cloudInitNoCloud:
+            userData: |
+              #cloud-config
+              chpasswd:
+                expire: false
+              password: 1234-abcd-qwerty
+              user: rhel
+          name: cloudinitdisk
