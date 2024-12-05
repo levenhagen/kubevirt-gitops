@@ -20,7 +20,7 @@ metadata:
   name: fedora-gitops1
 spec:
   dataVolumeTemplates:
-  - metadata:
+    - metadata:
         name: fedora-gitops1
       spec:
         sourceRef:
