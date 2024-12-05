@@ -14,7 +14,7 @@ metadata:
       ]
   labels:
     app: fedora-gitops1
-    vm.kubevirt.io/template: fedora-server-large
+    vm.kubevirt.io/template: fedora-server-medium
     vm.kubevirt.io/template.revision: "1"
     vm.kubevirt.io/template.version: v0.14.0
   name: fedora-gitops1
@@ -29,20 +29,22 @@ spec:
           namespace: openshift-virtualization-os-images
         storage:
           resources: {}
-  instancetype:
-    name: u1.large
   running: true
   template:
     metadata:
       annotations:
-        vm.kubevirt.io/flavor: large
+        vm.kubevirt.io/flavor: medium
         vm.kubevirt.io/os: fedora
         vm.kubevirt.io/workload: server
       labels:
         kubevirt.io/domain: fedora-gitops1
-        kubevirt.io/size: large
+        kubevirt.io/size: medium
     spec:
       domain:
+        cpu:
+          cores: 2
+          sockets: 1
+          threads: 1
         devices:
           disks:
           - disk:
