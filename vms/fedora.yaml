@@ -30,7 +30,6 @@ spec:
           namespace: openshift-virtualization-os-images
         storage:
           resources: {}
-  running: true
   template:
     metadata:
       annotations:
