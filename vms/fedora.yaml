@@ -19,6 +19,7 @@ metadata:
     vm.kubevirt.io/template.version: v0.14.0
   name: fedora-gitops1
 spec:
+  running: true
   dataVolumeTemplates:
     - metadata:
         creationTimestamp: null
